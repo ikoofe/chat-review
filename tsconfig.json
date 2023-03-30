@@ -2,6 +2,7 @@
   "include": ["src"],
   "exclude": ["dist", "node_modules"],
   "compilerOptions": {
+    "lib": [ "ES2022" ],
     "target": "ES2020",
     "module": "ESNext",
     "moduleResolution": "node",

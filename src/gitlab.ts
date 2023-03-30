@@ -14,25 +14,32 @@ const formatByCamelCase = (obj: Record<string, any>) => {
   return target;
 };
 
-const calLastNewLine = (diff: string) => {
-  const list = diff.match(/@@ \-\d+,\d+ \+\d+,\d+ @@/g) || [];
-  const len = list.length;
-  if (len > 0) {
-    const last = list[len - 1];
-    const [oldLine, newLine] = last
-      .replace(/@@ \-(\d+),(\d+) \+(\d+),(\d+) @@/g, ($0, $1, $2, $3, $4) => {
-        return `${+$1 + +$2},${+$3 + +$4}`;
-      })
-      .split(',');
-    return {
-      oldLine: +oldLine,
-      newLine: +newLine,
-    };
-  }
+const calLastLine = (diff: string) => {
+  const diffList = diff.split('\n').reverse();
+  const lastLineFirstChar = diffList[1][0];
+  const lastDiff =
+    diffList.find((item) => {
+      return /^@@ \-\d+,\d+ \+\d+,\d+ @@/g.test(item);
+    }) || '';
+
+  const [lastOldLineCount, lastNewLineCount] = lastDiff
+    .replace(/@@ \-(\d+),(\d+) \+(\d+),(\d+) @@/g, ($0, $1, $2, $3, $4) => {
+      return `${+$1 + +$2},${+$3 + +$4}`;
+    })
+    .split(',');
+
+  let lastOldLine = parseInt(lastOldLineCount);
+  let lastNewLine = parseInt(lastNewLineCount);
+
+  lastOldLine = isNaN(lastOldLine) ? -1 : lastOldLine - 1;
+  lastNewLine = isNaN(lastNewLine) ? -1 : lastNewLine - 1;
+
+  lastOldLine = lastLineFirstChar === '+' ? -1 : lastOldLine;
+  lastNewLine = lastLineFirstChar === '-' ? -1 : lastNewLine;
 
   return {
-    oldLine: 0,
-    newLine: 0,
+    lastOldLine,
+    lastNewLine,
   };
 };
 
@@ -66,8 +73,8 @@ export default class Gitlab {
             return true;
           })
           .map((item: GitlabChange) => {
-            const { oldLine, newLine } = calLastNewLine(item.diff);
-            return { ...item, lastNewLine: newLine - 1, lastOldLine: oldLine - 1};
+            const { lastOldLine, lastNewLine } = calLastLine(item.diff);
+            return { ...item, lastNewLine, lastOldLine };
           });
         return {
           state,
@@ -93,8 +100,8 @@ export default class Gitlab {
     body,
     ref,
   }: {
-    newPath: string;
-    newLine: number;
+    newPath?: string;
+    newLine?: number;
     oldPath?: string;
     oldLine?: number;
     body: string;
@@ -118,5 +125,40 @@ export default class Gitlab {
       .catch((error) => {
         logger.error(error);
       });
+  }
+
+  async codeReview({
+    change,
+    message,
+    ref,
+  }: {
+    change: GitlabChange;
+    message: string;
+    ref: GitlabDiffRef;
+  }) {
+    const { lastNewLine = -1, lastOldLine = -1, newPath, oldPath } = change;
+
+    if (lastNewLine === -1 && lastOldLine === -1) {
+      logger.error('Code line error');
+      return;
+    }
+
+    const params: { oldLine?: number; oldPath?: string; newLine?: number; newPath?: string } = {};
+
+    if (lastOldLine !== -1) {
+      params.oldLine = lastOldLine;
+      params.oldPath = oldPath;
+    }
+
+    if (lastNewLine !== -1) {
+      params.newLine = lastNewLine;
+      params.newPath = newPath;
+    }
+
+    return await this.postComment({
+      ...params,
+      body: message,
+      ref,
+    });
   }
 }

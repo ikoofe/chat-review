@@ -1,4 +1,3 @@
-import 'isomorphic-fetch';
 import Gitlab from './gitlab';
 import ChatGPT from './chatgpt';
 import { logger } from './utils';
@@ -29,32 +28,10 @@ async function run({
 
   for (let i = 0; i < changes.length; i += 1) {
     const change = changes[i];
-    const body = await chatgpt.codeReview(change.diff);
-    if (!!body) {
-      const { lastNewLine = -1, lastOldLine = -1, newPath, oldPath } = change;
-      const params: { oldLine?: number; oldPath?: string} = {
-
-      };
-      if (lastNewLine <= 0) {
-        logger.error('Code line error');
-        return;
-      }
-
-      if (lastOldLine >= 0) {
-        params.oldLine = lastOldLine;
-        params.oldPath = oldPath;
-      }
-
-      await gitlab.postComment({
-        ...params,
-        newLine: lastNewLine,
-        newPath: newPath,
-        body,
-        ref,
-      });
-    }
+    const message = await chatgpt.codeReview(change.diff);
+    const result = await gitlab.codeReview({ message, ref, change });
+    logger.info(message, result?.data);
   }
 }
 
 export default run;
-
