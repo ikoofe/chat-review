@@ -27,7 +27,7 @@ Code Review:
     - npm run build
     - ./dist/cli.mjs --chatgpt ${CHAT_GPT_KEY} --token ${GITLAB_TOKEN} --project ${CI_MERGE_REQUEST_PROJECT_ID} --mr ${CI_MERGE_REQUEST_IID}
   only:
-      - merge_requests
-    except:
-      variables:
-        - $CI_MERGE_REQUEST_TARGET_BRANCH_NAME !~ /^(main|release)$/
+    - merge_requests
+  except:
+    variables:
+      - $CI_MERGE_REQUEST_TARGET_BRANCH_NAME !~ /^(main|release)$/
