@@ -30,7 +30,7 @@ export default class ChatGTP {
   private generatePrompt = (patch: string) => {
     const answerLanguage = `Answer me in ${this.language},`;
 
-    return `Bellow is the gitlab code diff, please help me do a brief code review,${answerLanguage} if any bug risk and improvement suggestion are welcome
+    return `Bellow is the gitlab code patch, please help me do a brief code review,${answerLanguage} if any bug risk and improvement suggestion are welcome
     ${patch}
     `;
   };

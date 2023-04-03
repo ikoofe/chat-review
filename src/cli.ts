@@ -13,67 +13,54 @@ const { version } = JSON.parse(
 
 const cli = cac('chat-review');
 
-const cwd = process.cwd();
-
 cli
   .command('run', 'code review by chatgpt')
   .option('--chatgpt <chatgpt>', 'chatgpt api token')
-  // .option('--model <model>', 'chatgpt model', {
-  //   default: 'gpt-3.5-turbo',
-  // })
-  // .option('--language <language>', 'chatgpt language', {
-  //   default: 'Chinese',
-  // })
-  // .option('--host <host>', 'gitlab host')
-  // .option('--token <token>', 'gitlab token')
-  // .option('--project <project>', 'gitlab project id')
-  // .option('--mr <mr>', 'gitlab merge request id')
+  .option('--token <token>', 'gitlab token')
+  .option('--project <project>', 'gitlab project id')
+  .option('--mr <mr>', 'gitlab merge request id')
+  .option('--model <model>', 'chatgpt model', {
+    default: 'gpt-3.5-turbo',
+  })
+  .option('--language <language>', 'chatgpt language', {
+    default: 'Chinese',
+  })
+  .option('--host <host>', 'gitlab host', {
+    default: 'https://gitlab.com',
+  })
   .action(
-    async (
-      root = cwd,
-      options: {
-        chatgpt: string;
-        // model: string;
-        // language: string;
-        // host: string;
-        // token: string;
-        // project: string | number;
-        // mr: string | number;
-      }
-    ) => {
-      console.log('-->', options);
+    async (options: {
+      chatgpt: string;
+      model: string;
+      language: string;
+      host: string;
+      token: string;
+      project: string | number;
+      mr: string | number;
+    }) => {
       const {
-        // host,
-        // token,
-        // project: projectId,
-        // mr: mrIId,
+        host,
+        token,
+        project: projectId,
+        mr: mrIId,
         chatgpt: apiKey,
-        // language,
-        // model,
+        language,
+        model,
       } = options;
       try {
-        console.log(
-          // host,
-          // token,
-          // projectId,
-          // mrIId,
-          apiKey,
-          // language,
-          // model, 
-          run);
-        // run({
-        //   gitlabConfig: {
-        //     host,
-        //     token,
-        //     projectId,
-        //     mrIId,
-        //   },
-        //   chatgptConfig: {
-        //     apiKey,
-        //     language,
-        //     model,
-        //   },
-        // });
+        run({
+          gitlabConfig: {
+            host,
+            token,
+            projectId,
+            mrIId,
+          },
+          chatgptConfig: {
+            apiKey,
+            language,
+            model,
+          },
+        });
       } catch (error) {
         logger.error(error);
       }
