@@ -14,9 +14,9 @@ const formatByCamelCase = (obj: Record<string, any>) => {
   return target;
 };
 
-const calLastLine = (diff: string) => {
-  const diffList = diff.split('\n').reverse();
-  const lastLineFirstChar = diffList[1][0];
+const parseLastDiff = (gitDiff: string) => {
+  const diffList = gitDiff.split('\n').reverse();
+  const lastLineFirstChar = diffList?.[1]?.[0];
   const lastDiff =
     diffList.find((item) => {
       return /^@@ \-\d+,\d+ \+\d+,\d+ @@/g.test(item);
@@ -28,14 +28,15 @@ const calLastLine = (diff: string) => {
     })
     .split(',');
 
-  let lastOldLine = parseInt(lastOldLineCount);
-  let lastNewLine = parseInt(lastNewLineCount);
+  if (!/^\d+$/.test(lastOldLineCount) || !/^\d+$/.test(lastNewLineCount)) {
+    return {
+      lastOldLine: -1,
+      lastNewLine: -1,
+    };
+  }
 
-  lastOldLine = isNaN(lastOldLine) ? -1 : lastOldLine - 1;
-  lastNewLine = isNaN(lastNewLine) ? -1 : lastNewLine - 1;
-
-  lastOldLine = lastLineFirstChar === '+' ? -1 : lastOldLine;
-  lastNewLine = lastLineFirstChar === '-' ? -1 : lastNewLine;
+  const lastOldLine = lastLineFirstChar === '+' ? -1 : (parseInt(lastOldLineCount) || 0) - 1;
+  const lastNewLine = lastLineFirstChar === '-' ? -1 : (parseInt(lastNewLineCount) || 0) - 1;
 
   return {
     lastOldLine,
@@ -73,7 +74,7 @@ export default class Gitlab {
             return true;
           })
           .map((item: GitlabChange) => {
-            const { lastOldLine, lastNewLine } = calLastLine(item.diff);
+            const { lastOldLine, lastNewLine } = parseLastDiff(item.diff);
             return { ...item, lastNewLine, lastOldLine };
           });
         return {

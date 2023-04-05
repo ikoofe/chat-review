@@ -15,7 +15,6 @@ async function run({
   const chatgpt = new ChatGPT(chatgptConfig);
 
   const { state, changes, ref } = await gitlab.getChanges();
-  logger.info(state, changes, ref);
   if (state !== 'opened') {
     logger.log('MR is closed');
     return;
