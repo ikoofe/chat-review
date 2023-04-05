@@ -3,6 +3,7 @@ export type  GitlabConfig = {
   token: string;
   projectId: string | number;
   mrIId: string | number;
+  target?: RegExp;
 }
 
 export type ChatGPTConfig = {
@@ -26,4 +27,5 @@ export interface GitlabChange {
   deletedFile: boolean;
   diff: string;
   lastNewLine?: number;
+  lastOldLine?: number;
 }

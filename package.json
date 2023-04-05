@@ -1,9 +1,6 @@
 {
   "name": "@koofe/chat-review",
   "private": true,
-  "engines": {
-    "node": "^14.18.0"
-  },
   "homepage": "",
   "keywords": [],
   "type": "module",
@@ -22,7 +19,6 @@
   "module": "./dist/index.mjs",
   "types": "dist/index.d.ts",
   "scripts": {
-    "preinstall": "npx only-allow pnpm",
     "postinstall": "simple-git-hooks",
     "format": "prettier --write --cache .",
     "lint": "eslint --cache .",

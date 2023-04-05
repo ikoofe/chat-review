@@ -13,35 +13,35 @@ const { version } = JSON.parse(
 
 const cli = cac('chat-review');
 
-const cwd = process.cwd();
-
-// publish
 cli
   .command('run', 'code review by chatgpt')
-  .option('-c, --chatgpt <chatgpt>', 'chatgpt api token')
-  .option('-m, --model <model>', 'chatgpt model', {
+  .option('--chatgpt <chatgpt>', 'chatgpt api token')
+  .option('--token <token>', 'gitlab token')
+  .option('--project <project>', 'gitlab project id')
+  .option('--mr <mr>', 'gitlab merge request id')
+  .option('--model <model>', 'chatgpt model', {
     default: 'gpt-3.5-turbo',
   })
-  .option('-l, --language <language>', 'chatgpt language', {
+  .option('--language <language>', 'chatgpt language', {
     default: 'Chinese',
   })
-  .option('-h, --host <host>', 'gitlab host')
-  .option('-t, --token <token>', 'gitlab token')
-  .option('-p, --project <project>', 'gitlab project id')
-  .option('-M, --mr <mr>', 'gitlab merge request id')
+  .option('--host <host>', 'gitlab host', {
+    default: 'https://gitlab.com',
+  })
+  .option('--target [target]', 'review files', {
+    default: /\.(j|t)sx?$/,
+  })
   .action(
-    async (
-      root = cwd,
-      options: {
-        chatgpt: string;
-        model: string;
-        language: string;
-        host: string;
-        token: string;
-        project: string | number;
-        mr: string | number;
-      }
-    ) => {
+    async (options: {
+      chatgpt: string;
+      model: string;
+      language: string;
+      host: string;
+      token: string;
+      project: string | number;
+      mr: string | number;
+      target: RegExp
+    }) => {
       const {
         host,
         token,
@@ -50,7 +50,9 @@ cli
         chatgpt: apiKey,
         language,
         model,
+        target,
       } = options;
+      console.log(options);
       try {
         run({
           gitlabConfig: {
@@ -58,6 +60,7 @@ cli
             token,
             projectId,
             mrIId,
+            target
           },
           chatgptConfig: {
             apiKey,

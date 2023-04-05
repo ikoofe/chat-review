@@ -27,15 +27,9 @@ async function run({
 
   for (let i = 0; i < changes.length; i += 1) {
     const change = changes[i];
-    const body = await chatgpt.codeReview(change.diff);
-    if (!!body) {
-      await gitlab.postComment({
-        newPath: change.newPath,
-        newLine: change.lastNewLine || 0,
-        body,
-        ref,
-      });
-    }
+    const message = await chatgpt.codeReview(change.diff);
+    const result = await gitlab.codeReview({ message, ref, change });
+    logger.info(message, result?.data);
   }
 }
 
