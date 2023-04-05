@@ -40,7 +40,7 @@ cli
       token: string;
       project: string | number;
       mr: string | number;
-      target: RegExp
+      target: string
     }) => {
       const {
         host,
@@ -52,7 +52,6 @@ cli
         model,
         target,
       } = options;
-      console.log(options);
       try {
         run({
           gitlabConfig: {
@@ -60,7 +59,7 @@ cli
             token,
             projectId,
             mrIId,
-            target
+            target: new RegExp(target),
           },
           chatgptConfig: {
             apiKey,

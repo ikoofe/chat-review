@@ -23,12 +23,11 @@ Code Review:
   stage: merge-request
   image: node:latest
   script:
-    - npm i
-    - npm run build
+    - npm i @koofe/chat-review -g
     - echo "$CI_MERGE_REQUEST_PROJECT_ID" 
     - echo "$CI_MERGE_REQUEST_IID"
     - echo "$GITLAB_TOKEN"
-    - ./dist/cli.mjs run --chatgpt "$CHAT_GPT_KEY" --token "$GITLAB_TOKEN" --project "$CI_MERGE_REQUEST_PROJECT_ID" --mr "$CI_MERGE_REQUEST_IID"
+    - chat-review run --chatgpt "$CHAT_GPT_KEY" --token "$GITLAB_TOKEN" --project "$CI_MERGE_REQUEST_PROJECT_ID" --mr "$CI_MERGE_REQUEST_IID"
   only:
     - merge_requests
   except:
