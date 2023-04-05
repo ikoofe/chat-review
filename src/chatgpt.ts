@@ -4,7 +4,7 @@ import { logger } from './utils';
 import type { AxiosInstance } from 'axios';
 import { ChatGPTConfig } from './types';
 
-export default class ChatGTP {
+export default class ChatGPT {
   private language: string;
   private request: AxiosInstance;
 
@@ -36,7 +36,7 @@ export default class ChatGTP {
   };
 
   private sendMessage = async (msg: string) => {
-    const currentDate = (new Date()).toISOString().split("T")[0];
+    const currentDate = new Date().toISOString().split('T')[0];
     return this.request.post('/v1/chat/completions', {
       messages: [
         {

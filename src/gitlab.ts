@@ -23,7 +23,7 @@ const parseLastDiff = (gitDiff: string) => {
     }) || '';
 
   const [lastOldLineCount, lastNewLineCount] = lastDiff
-    .replace(/@@ \-(\d+),(\d+) \+(\d+),(\d+) @@/g, ($0, $1, $2, $3, $4) => {
+    .replace(/@@ \-(\d+),(\d+) \+(\d+),(\d+) @@.*/g, ($0, $1, $2, $3, $4) => {
       return `${+$1 + +$2},${+$3 + +$4}`;
     })
     .split(',');
