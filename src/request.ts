@@ -7,7 +7,7 @@ const createRequest = (
 ) => {
   const instance = axios.create({
     baseURL: host,
-    timeout: 5000,
+    // timeout: 5000,
   });
 
   instance.interceptors.request.use(
