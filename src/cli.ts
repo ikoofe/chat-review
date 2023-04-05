@@ -28,6 +28,9 @@ cli
   .option('--host <host>', 'gitlab host', {
     default: 'https://gitlab.com',
   })
+  .option('--target [target]', 'review files', {
+    default: /\.(j|t)sx?$/,
+  })
   .action(
     async (options: {
       chatgpt: string;
@@ -37,6 +40,7 @@ cli
       token: string;
       project: string | number;
       mr: string | number;
+      target: RegExp
     }) => {
       const {
         host,
@@ -46,7 +50,9 @@ cli
         chatgpt: apiKey,
         language,
         model,
+        target,
       } = options;
+      console.log(options);
       try {
         run({
           gitlabConfig: {
@@ -54,6 +60,7 @@ cli
             token,
             projectId,
             mrIId,
+            target
           },
           chatgptConfig: {
             apiKey,

@@ -48,11 +48,13 @@ export default class Gitlab {
   private projectId: string | number;
   private mrIId: number | string;
   private request: AxiosInstance;
+  private target: RegExp;
 
-  constructor({ host, token, projectId, mrIId }: GitlabConfig) {
+  constructor({ host, token, projectId, mrIId, target }: GitlabConfig) {
     this.request = createRequest(host, { params: { private_token: token } });
     this.mrIId = mrIId;
     this.projectId = projectId;
+    this.target = target || /\.(j|t)sx?$/;
   }
 
   getChanges() {
@@ -68,7 +70,7 @@ export default class Gitlab {
             if (renamedFile || deletedFile) {
               return false;
             }
-            if (!/\.(j|t)sx?$/.test(newPath)) {
+            if (!this.target.test(newPath)) {
               return false;
             }
             return true;

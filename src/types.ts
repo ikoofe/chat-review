@@ -3,6 +3,7 @@ export type  GitlabConfig = {
   token: string;
   projectId: string | number;
   mrIId: string | number;
+  target?: RegExp;
 }
 
 export type ChatGPTConfig = {
