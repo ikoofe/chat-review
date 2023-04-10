@@ -26,8 +26,7 @@ Code Review:
     - npm i @koofe/chat-review -g
     - echo "$CI_MERGE_REQUEST_PROJECT_ID" 
     - echo "$CI_MERGE_REQUEST_IID"
-    - echo "$GITLAB_TOKEN"
-    - chat-review run --chatgpt "$CHAT_GPT_KEY" --token "$GITLAB_TOKEN" --project "$CI_MERGE_REQUEST_PROJECT_ID" --mr "$CI_MERGE_REQUEST_IID"
+    - chat-review run --chatgpt "$CHATGPT_KEY" --token "$GITLAB_TOKEN" --project "$CI_MERGE_REQUEST_PROJECT_ID" --mr "$CI_MERGE_REQUEST_IID"
   only:
     - merge_requests
   except:
