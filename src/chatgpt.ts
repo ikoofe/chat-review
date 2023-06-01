@@ -9,7 +9,7 @@ export default class ChatGPT {
   private request: AxiosInstance;
 
   constructor(config: ChatGPTConfig) {
-    const host = 'https://api.openai.com';
+    const host = config.proxyHost || 'https://api.openai.com';
     this.request = createRequest(host, {
       headers: {
         'Content-Type': 'application/json',
