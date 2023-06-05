@@ -41,6 +41,7 @@ chat-review --chatgpt sk-xxxxxxxxx --token 'glpat-xxxxxx' --project 200 --mr 200
 - `--model`：ChatGPT 的模型类型，默认为 `gpt-3.5-turbo`。
 - `--language`：ChatGPT 的语言类型，默认为中文。
 - `--host`：GitLab 的访问地址，默认为 `https://gitlab.com`。
+- `--proxyHost`：ChatGPT API host, 默认是 `https://api.openai.com`。
 - `--target`：GitLab Review 的文件，默认为 /\.(j|t)sx?$/
 
 ### CI

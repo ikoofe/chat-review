@@ -28,6 +28,9 @@ cli
   .option('--host <host>', 'gitlab host', {
     default: 'https://gitlab.com',
   })
+  .option('--proxyHost <host>', 'custom chatgpt api host', {
+    default: 'https://api.openai.com',
+  })
   .option('--target [target]', 'review files', {
     default: /\.(j|t)sx?$/,
   })
@@ -37,6 +40,7 @@ cli
       model: string;
       language: string;
       host: string;
+      proxyHost: string;
       token: string;
       project: string | number;
       mr: string | number;
@@ -44,6 +48,7 @@ cli
     }) => {
       const {
         host,
+        proxyHost,
         token,
         project: projectId,
         mr: mrIId,
@@ -65,6 +70,7 @@ cli
             apiKey,
             language,
             model,
+            proxyHost
           },
         });
       } catch (error) {

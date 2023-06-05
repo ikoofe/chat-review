@@ -12,6 +12,7 @@ export type ChatGPTConfig = {
   temperature?: number;
   top_p?: number;
   language?: string;
+  proxyHost?: string
 }
 export interface GitlabDiffRef {
   baseSha: string;
