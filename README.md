@@ -15,7 +15,7 @@ import review from '@koofe/chat-review';
 
 review({
   gitlabConfig: {
-    host: 'https://gitlab.mokahr.com/',
+    host: 'https://gitlab.com/',
     mrIId: 2001,
     projectId: 200,
     token: 'glpat-xxxxxx',
